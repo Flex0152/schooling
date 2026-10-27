@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: python-ci-run-
+spec:
+  pipelineRef:
+    name: python-ci
+
+  workspaces:
+    - name: shared-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi

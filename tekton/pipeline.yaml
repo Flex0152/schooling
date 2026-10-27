@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: python-ci
+spec:
+  params:
+    - name: repo-url
+      type: string
+      default: https://github.com/Flex0152/schooling.git
+
+    - name: revision
+      type: string
+      default: main
+
+  workspaces:
+    - name: shared-workspace
+
+  tasks:
+    - name: clone
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.repo-url)
+        - name: revision
+          value: $(params.revision)
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+
+    - name: test
+      runAfter:
+        - clone
+      taskRef:
+        name: unittest
+      workspaces:
+        - name: source
+          workspace: shared-workspace
